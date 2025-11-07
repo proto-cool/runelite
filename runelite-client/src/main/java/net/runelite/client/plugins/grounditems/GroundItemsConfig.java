@@ -238,7 +238,7 @@ public interface GroundItemsConfig extends Config
     @ConfigItem(
 		keyName = "hideUnderValueCalculation",
 		name = "Hide under value calculation",
-		description = "Configures which coin value is used to determine highlight color.",
+		description = "Configures which coin value is used to determine how ground items are hidden.",
 		position = 14
     )
     default ValueCalculationMode hideUnderValueCalculationMode()
