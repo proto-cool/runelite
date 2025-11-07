@@ -90,13 +90,12 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.input.MouseManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.grounditems.config.HighlightTier;
-import net.runelite.client.plugins.grounditems.config.ItemHighlightMode;
-import net.runelite.client.plugins.grounditems.config.MenuHighlightMode;
+import net.runelite.client.plugins.grounditems.config.*;
+
 import static net.runelite.client.plugins.grounditems.config.MenuHighlightMode.BOTH;
 import static net.runelite.client.plugins.grounditems.config.MenuHighlightMode.NAME;
 import static net.runelite.client.plugins.grounditems.config.MenuHighlightMode.OPTION;
-import net.runelite.client.plugins.grounditems.config.OwnershipFilterMode;
+
 import net.runelite.client.ui.components.colorpicker.ColorPickerManager;
 import net.runelite.client.ui.components.colorpicker.RuneliteColorPicker;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -664,9 +663,19 @@ public class GroundItemsPlugin extends Plugin
 		final boolean canBeHidden = groundItem.getGePrice() > 0 || groundItem.isTradeable() || !config.dontHideUntradeables();
 		final boolean underGe = groundItem.getGePrice() < config.getHideUnderValue();
 		final boolean underHa = groundItem.getHaPrice() < config.getHideUnderValue();
+		final ValueCalculationMode hideUnderValueMode = config.hideUnderValueCalculationMode();
+		boolean hideValue;
+
+		if (hideUnderValueMode == ValueCalculationMode.GE) {
+			hideValue = underGe;
+		} else if (hideUnderValueMode == ValueCalculationMode.HA) {
+			hideValue = underHa;
+		} else {
+			hideValue = underGe && underHa;
+		}
 
 		// Explicit highlight takes priority over implicit hide
-		return isExplicitHidden || (!isExplicitHighlight && canBeHidden && underGe && underHa)
+		return isExplicitHidden || (!isExplicitHighlight && canBeHidden && hideValue)
 			? config.hiddenColor()
 			: null;
 	}
